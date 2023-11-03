@@ -1,8 +1,6 @@
 const { celebrate, Joi } = require('celebrate');
 const isURL = require('validator/lib/isURL');
 
-const RegExp = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)/;
-
 const validateUrl = (value, helpers) => {
   if (isURL(value)) {
     return value;
@@ -15,8 +13,6 @@ const validateCreateUser = celebrate({
     email: Joi.string().required().email(),
     password: Joi.string().required(),
     name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-    avatar: Joi.string().pattern(RegExp),
   }),
 });
 
@@ -30,7 +26,7 @@ const validateLogin = celebrate({
 const validateUserUpdate = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    about: Joi.string().required().min(2).max(30),
+    email: Joi.string().required().email(),
   }),
 });
 

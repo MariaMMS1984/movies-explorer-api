@@ -6,7 +6,7 @@ const ErrorBadRequest = require('../errors/incorrect');
 const ErrorNotFound = require('../errors/notfound');
 const ErrorConflict = require('../errors/repeat');
 
-const JWT_SECRET = 'secret';
+const { JWT_SECRET } = process.env;
 
 const getJwtToken = (id) => {
   const token = jwt.sign({ payload: id }, process.env.NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
@@ -30,8 +30,6 @@ const createUser = (req, res, next) => {
         .then((user) => res.status(201).send({
           email: user.email,
           name: user.name,
-          about: user.about,
-          avatar: user.avatar,
         }))
         .catch((error) => {
           if (error.name === 'MongoServerError' || error.code === 11000) {
@@ -89,7 +87,7 @@ const updateUser = (req, res, next) => {
       res.send(user);
     })
     .catch((error) => {
-      if (error.name === 'ValidationError') {
+      if (error.name === 'ValidationError' || error.code === 11000) {
         next(new ErrorBadRequest('Передан некорректный id пользователя.'));
       } else {
         next(error);
@@ -97,9 +95,19 @@ const updateUser = (req, res, next) => {
     });
 };
 
+const logOut = (req, res) => {
+  res
+    .clearCookie('jwt', {
+      httpOnly: true,
+    })
+    .status(200)
+    .send({ message: 'Пользователь разлогинен' });
+};
+
 module.exports = {
   createUser,
   login,
   getThisUser,
   updateUser,
+  logOut,
 };

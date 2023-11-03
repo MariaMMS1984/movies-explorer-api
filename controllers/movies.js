@@ -52,9 +52,6 @@ module.exports.getMovies = (req, res, next) => {
     .then((movies) => {
       res.status(200).send(movies);
     })
-    .catch((err) => {
-      throw new ErrorNotFound(err.message);
-    })
     .catch(next);
 };
 

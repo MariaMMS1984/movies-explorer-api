@@ -11,6 +11,6 @@ const {
 
 movies.post('/', validateCreateMovie, createMovie);
 movies.get('/', getMovies);
-movies.delete('/_id', validateMovieId, deleteMovie);
+movies.delete('/:movieId', validateMovieId, deleteMovie);
 
 module.exports = movies;
